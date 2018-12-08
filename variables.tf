@@ -1,3 +1,7 @@
+variable "sandbox_name" {
+  description = "Sandbox account name"
+  default = "sbx"
+}
 variable "aws_region" {
   description = "Region for the VPC"
   default = "us-east-1"
@@ -8,9 +12,10 @@ variable "vpc_cidr" {
   default = "10.0.0.0/22"
 }
 
+# a /28 is the smallest subnet aws will support
 variable "public_subnet_cidr" {
   description = "CIDR for the public subnet"
-  default = "10.0.0.0/30"
+  default = "10.0.0.0/28"
 }
 
 variable "private_subnet_a_cidr" {

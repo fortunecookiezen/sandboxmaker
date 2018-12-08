@@ -29,15 +29,17 @@ resource "aws_instance" "tf_private" {
    vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
    iam_instance_profile = "${aws_iam_instance_profile.ec2_profile.name}"
    source_dest_check = false
+   user_data = "${file("install.sh")}"
 
   tags {
-    Name = "tf private"
+    Name = "sandbox host"
+    Environment = "Sandbox"
   }
 }
 
 # Create sandbox S3 bucket
 resource "aws_s3_bucket" "sandbox" {
-  bucket_prefix = "sandbox"
+  bucket_prefix = "${var.sandbox_name}-sandbox-"
   acl    = "private"
 
   tags {
