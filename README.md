@@ -1,7 +1,8 @@
 # sandboxmaker
-aws sandbox environment maker
+## aws sandbox environment maker
 
-Terraform scripts to create a sandbox environment in AWS
+Terraform scripts to create a sandbox environment in AWS. The use of [Terraform](https://terraform.io) for this purpose allows the environment configuration to be enforced.
+
 ![Architecture Diagram](https://s3.amazonaws.com/fortunecookiezen/github/images/Sandbox+Design.png)
 
 Scripts create the following:
