@@ -21,7 +21,7 @@ resource "aws_key_pair" "default" {
 }
 
 # Define instance inside the private subnet
-resource "aws_instance" "tf_private" {
+resource "aws_instance" "tf_private_a" {
    ami  = "${var.ami}"
    instance_type = "t2.micro"
    key_name = "${aws_key_pair.default.id}"
@@ -33,6 +33,22 @@ resource "aws_instance" "tf_private" {
 
   tags {
     Name = "sandbox host"
+    Environment = "Sandbox"
+  }
+}
+
+# private b subnet instance for testing
+resource "aws_instance" "tf_private_b" {
+   ami  = "${var.ami}"
+   instance_type = "t2.micro"
+   key_name = "${aws_key_pair.default.id}"
+   subnet_id = "${aws_subnet.private-subnet-b.id}"
+   vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
+   iam_instance_profile = "${aws_iam_instance_profile.ec2_profile.name}"
+   source_dest_check = false
+
+  tags {
+    Name = "private_b host"
     Environment = "Sandbox"
   }
 }
