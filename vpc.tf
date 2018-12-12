@@ -44,11 +44,11 @@ resource "aws_subnet" "public-subnet" {
   }
 }
 
-# Define the private subnet
+# Define the private subnet(s)
 resource "aws_subnet" "private-subnet-a" {
   vpc_id = "${aws_vpc.default.id}"
   cidr_block = "${var.private_subnet_a_cidr}"
-  availability_zone = "us-east-1b"
+  availability_zone = "us-east-1a"
 
   tags {
     Name = "private a"
@@ -59,7 +59,7 @@ resource "aws_subnet" "private-subnet-a" {
 resource "aws_subnet" "private-subnet-b" {
   vpc_id = "${aws_vpc.default.id}"
   cidr_block = "${var.private_subnet_b_cidr}"
-  availability_zone = "us-east-1a"
+  availability_zone = "us-east-1b"
 
   tags {
     Name = "private b"
@@ -141,6 +141,9 @@ resource "aws_route_table_association" "tf-private-rt" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = "${aws_vpc.default.id}"
   service_name = "com.amazonaws.us-east-1.s3"
+  route_table_ids = [
+  "${aws_route_table.tf-private-rt.id}",
+  ]
 }
 
 resource "aws_vpc_endpoint" "ssm" {
@@ -161,6 +164,37 @@ resource "aws_vpc_endpoint" "ssm" {
 resource "aws_vpc_endpoint" "ssmmessages" {
   vpc_id       = "${aws_vpc.default.id}"
   service_name = "com.amazonaws.us-east-1.ssmmessages"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [
+    "${aws_default_security_group.default.id}",
+  ]
+
+  subnet_ids          = [
+    "${aws_subnet.private-subnet-a.id}",
+    "${aws_subnet.private-subnet-b.id}"
+  ]
+}
+
+
+resource "aws_vpc_endpoint" "ec2" {
+  vpc_id       = "${aws_vpc.default.id}"
+  service_name = "com.amazonaws.us-east-1.ec2"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [
+  "${aws_default_security_group.default.id}",
+  ]
+
+  subnet_ids          = [
+    "${aws_subnet.private-subnet-a.id}",
+    "${aws_subnet.private-subnet-b.id}"
+  ]
+}
+
+resource "aws_vpc_endpoint" "ec2messages" {
+  vpc_id       = "${aws_vpc.default.id}"
+  service_name = "com.amazonaws.us-east-1.ec2messages"
   vpc_endpoint_type = "Interface"
 
   security_group_ids = [
