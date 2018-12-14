@@ -93,7 +93,7 @@ resource "aws_route_table" "tf-public-rt" {
 }
 
 # Assign the route table to the public Subnet
-resource "aws_route_table_association" "tf-public-rt" {
+resource "aws_route_table_association" "tf-public-rt-as" {
   subnet_id = "${aws_subnet.public-subnet.id}"
   route_table_id = "${aws_route_table.tf-public-rt.id}"
 }
@@ -118,7 +118,7 @@ resource "aws_nat_gateway" "ngw" {
   }
 }
 
-resource "aws_route_table" "tf-private-rt" {
+resource "aws_route_table" "tf-private-rt-a" {
   vpc_id = "${aws_vpc.default.id}"
 
   route {
@@ -133,16 +133,37 @@ resource "aws_route_table" "tf-private-rt" {
 }
 
 # Assign the route table to the public Subnet
-resource "aws_route_table_association" "tf-private-rt" {
+resource "aws_route_table_association" "tf-private-rt-aas" {
   subnet_id = "${aws_subnet.private-subnet-a.id}"
-  route_table_id = "${aws_route_table.tf-private-rt.id}"
+  route_table_id = "${aws_route_table.tf-private-rt-a.id}"
+}
+
+resource "aws_route_table" "tf-private-rt-b" {
+  vpc_id = "${aws_vpc.default.id}"
+
+#  route {
+#    cidr_block = "0.0.0.0/0"
+#    gateway_id = "${aws_nat_gateway.ngw.id}"
+#  }
+
+  tags {
+    Name = "private-b subnet rt"
+    Environment = "Sandbox"
+  }
+}
+
+# Assign the route table to the public Subnet
+resource "aws_route_table_association" "tf-private-rt-bas" {
+  subnet_id = "${aws_subnet.private-subnet-b.id}"
+  route_table_id = "${aws_route_table.tf-private-rt-b.id}"
 }
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = "${aws_vpc.default.id}"
   service_name = "com.amazonaws.us-east-1.s3"
   route_table_ids = [
-  "${aws_route_table.tf-private-rt.id}",
+  "${aws_route_table.tf-private-rt-a.id}",
+  "${aws_route_table.tf-private-rt-b.id}"
   ]
 }
 
