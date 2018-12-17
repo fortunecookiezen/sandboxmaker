@@ -7,5 +7,5 @@
 
 # .tfvars files
 *.tfvars
-**id_rsa.pub*
+*id_rsa*
 *.pem
