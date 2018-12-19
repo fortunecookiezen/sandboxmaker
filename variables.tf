@@ -23,11 +23,6 @@ variable "private_subnet_a_cidr" {
   default = "10.0.1.0/24"
 }
 
-variable "private_subnet_b_cidr" {
-  description = "CIDR for the private subnet"
-  default = "10.0.2.0/24"
-}
-
 variable "ami" {
   description = "AMI for EC2"
   default = "ami-0080e4c5bc078760e"
@@ -35,5 +30,5 @@ variable "ami" {
 
 variable "key_path" {
   description = "SSH Public Key path"
-  default = "/Users/jamesp/Projects/Keys/SSH/id_rsa.pub"
+  default = "files/id_rsa.pub"
 }

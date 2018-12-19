@@ -56,17 +56,6 @@ resource "aws_subnet" "private-subnet-a" {
   }
 }
 
-resource "aws_subnet" "private-subnet-b" {
-  vpc_id = "${aws_vpc.default.id}"
-  cidr_block = "${var.private_subnet_b_cidr}"
-  availability_zone = "us-east-1b"
-
-  tags {
-    Name = "private b"
-    Environment = "Sandbox"
-  }
-}
-
 # Define the internet gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.default.id}"
@@ -138,32 +127,11 @@ resource "aws_route_table_association" "tf-private-rt-aas" {
   route_table_id = "${aws_route_table.tf-private-rt-a.id}"
 }
 
-resource "aws_route_table" "tf-private-rt-b" {
-  vpc_id = "${aws_vpc.default.id}"
-
-#  route {
-#    cidr_block = "0.0.0.0/0"
-#    gateway_id = "${aws_nat_gateway.ngw.id}"
-#  }
-
-  tags {
-    Name = "private-b subnet rt"
-    Environment = "Sandbox"
-  }
-}
-
-# Assign the route table to the public Subnet
-resource "aws_route_table_association" "tf-private-rt-bas" {
-  subnet_id = "${aws_subnet.private-subnet-b.id}"
-  route_table_id = "${aws_route_table.tf-private-rt-b.id}"
-}
-
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = "${aws_vpc.default.id}"
   service_name = "com.amazonaws.us-east-1.s3"
   route_table_ids = [
   "${aws_route_table.tf-private-rt-a.id}",
-  "${aws_route_table.tf-private-rt-b.id}"
   ]
 }
 
@@ -178,7 +146,6 @@ resource "aws_vpc_endpoint" "ssm" {
 
   subnet_ids          = [
     "${aws_subnet.private-subnet-a.id}",
-    "${aws_subnet.private-subnet-b.id}"
   ]
 }
 
@@ -193,7 +160,6 @@ resource "aws_vpc_endpoint" "ssmmessages" {
 
   subnet_ids          = [
     "${aws_subnet.private-subnet-a.id}",
-    "${aws_subnet.private-subnet-b.id}"
   ]
 }
 
@@ -209,7 +175,6 @@ resource "aws_vpc_endpoint" "ec2" {
 
   subnet_ids          = [
     "${aws_subnet.private-subnet-a.id}",
-    "${aws_subnet.private-subnet-b.id}"
   ]
 }
 
@@ -224,6 +189,5 @@ resource "aws_vpc_endpoint" "ec2messages" {
 
   subnet_ids          = [
     "${aws_subnet.private-subnet-a.id}",
-    "${aws_subnet.private-subnet-b.id}"
   ]
 }

@@ -37,22 +37,6 @@ resource "aws_instance" "tf_private_a" {
   }
 }
 
-# private b subnet instance for testing
-resource "aws_instance" "tf_private_b" {
-   ami  = "${var.ami}"
-   instance_type = "t2.micro"
-   key_name = "${aws_key_pair.default.id}"
-   subnet_id = "${aws_subnet.private-subnet-b.id}"
-   vpc_security_group_ids = ["${aws_default_security_group.default.id}"]
-   iam_instance_profile = "${aws_iam_instance_profile.ec2_profile.name}"
-   source_dest_check = false
-
-  tags {
-    Name = "private_b host"
-    Environment = "Sandbox"
-  }
-}
-
 # Create sandbox S3 bucket
 resource "aws_s3_bucket" "sandbox" {
   bucket_prefix = "${var.sandbox_name}-sandbox-"
